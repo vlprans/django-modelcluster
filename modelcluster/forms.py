@@ -183,10 +183,14 @@ class ClusterFormMetaclass(ModelFormMetaclass):
         # replace that with ClusterFormOptions so that we can access _meta.formsets
         opts = new_class._meta = ClusterFormOptions(getattr(new_class, 'Meta', None))
         if opts.model:
-            try:
-                child_relations = opts.model._meta.child_relations
-            except AttributeError:
-                child_relations = []
+            child_relations = []
+
+            for model in {opts.model} | opts.model._meta.get_parent_list():
+                if not model._meta.abstract:
+                    try:
+                        child_relations.extend(model._meta.child_relations)
+                    except AttributeError:
+                        pass
 
             formsets = {}
             for rel in child_relations:
