@@ -27,8 +27,7 @@ def get_serializable_data_for_fields(model):
     obj = {'pk': get_field_value(pk_field, model)}
 
     for field in model._meta.fields:
-        if field.serialize:
-            obj[field.name] = get_field_value(field, model)
+        obj[field.name] = get_field_value(field, model)
 
     return obj
 
