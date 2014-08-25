@@ -27,7 +27,8 @@ def get_serializable_data_for_fields(model):
     obj = {'pk': get_field_value(pk_field, model)}
 
     for field in model._meta.fields:
-        obj[field.name] = get_field_value(field, model)
+        if field.serialize or field.rel and field.rel.parent_link:
+            obj[field.name] = get_field_value(field, model)
 
     return obj
 
